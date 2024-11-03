@@ -101,14 +101,21 @@ class ScreenMonitor(QThread):
                 if boxes:
                     no_person_time = None
                 else:
-                    if no_person_time is None:
-                        no_person_time = time.time()
-                    elif time.time() - no_person_time >= 1:
-                        self.switch_to_safe_camera()
-                        no_person_message = f"No person detected at {time.strftime('%H:%M:%S')}"
-                        logging.info(no_person_message)
-                        self.log_event.emit(no_person_message)
-                        no_person_time = None
+                    # Comment out the delay logic
+                    # if no_person_time is None:
+                    #     no_person_time = time.time()
+                    # elif time.time() - no_person_time >= 1:
+                    #     self.switch_to_safe_camera()
+                    #     logging.info(f"No person detected at {time.strftime('%H:%M:%S')}")
+                    #     self.log_event.emit(f"No person detected at {time.strftime('%H:%M:%S')}")
+                    #     no_person_time = None
+
+                    # Call switch_to_safe_camera() immediately
+                    self.switch_to_safe_camera()
+                    logging.info(f"No person detected at {time.strftime('%H:%M:%S')}")
+                    self.log_event.emit(f"No person detected at {time.strftime('%H:%M:%S')}")
+                    no_person_time = None  # Reset the no_person_time
+
 
             else:
                 # Target application is not in focus
@@ -156,7 +163,7 @@ class ScreenMonitor(QThread):
             logging.info(event)
             self.log_event.emit(event)
             # Pause monitoring and set user_paused to True
-            self.pause(user_initiated=True)
+            # self.pause(user_initiated=True)
         except Exception as e:
             event = f"Error sending macro keys: {e}"
             logging.error(event)
